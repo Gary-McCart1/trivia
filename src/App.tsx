@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./index.css";
-import QuestionCard from "./components/QuestionCard";
+import QuestionCard from "./components/QuestionCard"
 import EndScreen from "./components/EndScreen";
 
 const App = () => {
