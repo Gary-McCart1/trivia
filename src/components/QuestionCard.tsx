@@ -2,6 +2,25 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 
+type QuestionType = {
+  category: string;
+  difficulty: string;
+  question: string;
+  correctAnswer: string;
+  incorrectAnswers: string[];
+}
+
+interface Props{
+  question: QuestionType,
+  setCorrectAnswers: React.Dispatch<React.SetStateAction<number>>,
+  questionNumber: number,
+  setQuestionNumber: React.Dispatch<React.SetStateAction<number>>,
+  timer: React.MutableRefObject<number>
+  timeLeft: number,
+  setTimeLeft: React.Dispatch<React.SetStateAction<number>>,
+  setEndScreen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
 const QuestionCard = ({
   question,
   setCorrectAnswers,
@@ -11,11 +30,11 @@ const QuestionCard = ({
   timeLeft,
   setTimeLeft,
   setEndScreen,
-}) => {
+}: Props) => {
   let { correctAnswer, incorrectAnswers } = question;
   const [isLoaded, setIsLoaded] = useState(false);
-  const [answerChoices, setAnswerChoices] = useState([]);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [answerChoices, setAnswerChoices] = useState<string[]>([]);
+  const [selectedAnswer, setSelectedAnswer] = useState<number>(-1);
   const [classType, setClassType] = useState("");
 
   useEffect(() => {
@@ -25,7 +44,7 @@ const QuestionCard = ({
     setIsLoaded(true);
   }, [question]);
 
-  const handleChoice = (choice, index) => {
+  const handleChoice = (choice: string, index: number) => {
     setSelectedAnswer(index);
     if (choice === correctAnswer) {
       setCorrectAnswers((c) => c + 1);
@@ -42,7 +61,7 @@ const QuestionCard = ({
       }, 1000);
     } else {
       setTimeout(() => {
-        timer.current = null;
+        timer.current = 0;
         setTimeLeft(timer.current);
         setEndScreen(true);
         setClassType("");
@@ -50,8 +69,8 @@ const QuestionCard = ({
     }
   };
 
-  const getClassName = (choice, index) => {
-    if (selectedAnswer === null) return "answer-choice";
+  const getClassName = (choice: string, index: number) => {
+    if (selectedAnswer === -1) return "answer-choice";
 
     if (choice === correctAnswer) return "answer-choice correct";
     if (index === selectedAnswer && choice !== correctAnswer)
