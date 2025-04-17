@@ -10,11 +10,13 @@ const App = () => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [shouldRestart, setShouldRestart] = useState(false);
   const [endScreen, setEndScreen] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const timer = useRef(20);
   const [timeLeft, setTimeLeft] = useState(timer.current);
 
   useEffect(() => {
+    setLoading(true);
     timer.current = 20;
     setTimeLeft(timer.current);
     setShouldRestart(false);
@@ -30,6 +32,8 @@ const App = () => {
         setCorrectAnswers(0);
       } catch (error) {
         console.log(error);
+      }finally{
+        setLoading(false)
       }
     };
     fetchQuestions();
@@ -56,13 +60,13 @@ const App = () => {
   return (
     <div className="main">
       <h1>General Knowledge Trivia 🧐</h1>
-      <div className="round-info">
-        {!endScreen && <p>Question: {questionNumber}/10</p>}
-        <p>Correct: {correctAnswers}/10</p>
-        <p>Timer: {timeLeft}</p>
-      </div>
       {!endScreen ? (
         <>
+          {!loading ? <div className="round-info">
+            <p>Question: {questionNumber}/10</p>
+            <p>Correct: {correctAnswers}/10</p>
+            <p>Timer: {timeLeft}</p>
+          </div> : <p>Loading</p>}
           <div className="questions-map">
             {questions.map(
               (question) =>
@@ -83,6 +87,7 @@ const App = () => {
         </>
       ) : (
         <EndScreen
+          correctAnswers={correctAnswers}
           shouldRestart={shouldRestart}
           setShouldRestart={setShouldRestart}
         />
